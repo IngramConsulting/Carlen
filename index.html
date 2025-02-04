@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carlén - Fashion & Style</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(232, 158, 184, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            transition: transform 0.1s ease, background-color 0.2s ease;
+        }
+
+        .custom-cursor.hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            background-color: rgba(232, 158, 184, 0.6);
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transition: background-color 0.3s ease;
+        }
+
+        header.scrolled {
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        header .logo {
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: red;
+        }
+
+        header nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        header nav ul li {
+            display: inline;
+        }
+
+        header nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        header nav ul li a:hover {
+            color: #E89EB8;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 150px 60px 80px;
+            background-color: #fef6f9;
+        }
+
+        .hero .text-section {
+            max-width: 50%;
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .hero h1 span {
+            color: #E89EB8;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin: 20px 0;
+            color: #555;
+        }
+
+        .hero button {
+            padding: 15px 30px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .hero button:hover {
+            background-color: #E89EB8;
+        }
+
+        .hero img {
+            max-width: 45%;
+            border-radius: 10px;
+        }
+
+        /* Sections */
+        .section {
+            padding: 80px 60px;
+        }
+
+        .section h2 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .section p {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 40px;
+        }
+
+        /* Gallery Section */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Client Section */
+        .client-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .client-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .client-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .client-logo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+
+        .client-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Instagram Embed Section */
+        .instagram-embed {
+            text-align: center;
+            background-color: #fef6f9;
+            padding: 60px 20px;
+        }
+
+        .instagram-embed iframe {
+            width: 320px;
+            height: 440px;
+            border: none;
+            overflow: hidden;
+        }
+
+        .instagram-embed a {
+            text-decoration: none;
+            color: #E89EB8;
+            font-size: 18px;
+            display: block;
+            margin-top: 20px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 60px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+        }
+
+        footer a {
+            color: #E89EB8;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 120px 20px 60px;
+            }
+
+            .hero .text-section {
+                max-width: 100%;
+            }
+
+            .hero img {
+                max-width: 80%;
+                margin-top: 30px;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .client-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .client-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">Carlén</div>
+        <nav>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="#clients">Clients</a></li>
+                <li><a href="#instagram">Instagram</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="text-section">
+            <h1>A World of <span>Elegance</span></h1>
+            <p>Welcome to Carlén, a clothing brand by Carolina Di Benedetto. Explore our stunning collections designed to celebrate individuality and style.</p>
+            <button onclick="window.location.href='gallery.html'">Browse Full Collection</button>
+        </div>
+        <img src="Caro.png" alt="Fashion Model">
+    </section>
+
+    <!-- About Section -->
+    <section class="section" id="about">
+        <h2>Customized Personal Styling</h2>
+        <p>At Carlén, we specialize in crafting unique and personalized fashion pieces tailored to your style and preferences. Discover the beauty of bespoke clothing.</p>
+    </section>
+
+    <!-- Clients Section -->
+    <section class="section" id="clients">
+        <h2>Our Clients</h2>
+        <div class="client-grid">
+            <div class="client-card">
+                <img src="https://via.placeholder.com/100" alt="Client Logo" class="client-logo">
+                <div class="client-name">Fashion Forward</div>
+            </div>
+            <div class="client-card">
+                <img src="https://via.placeholder.com/100" alt="Client Logo" class="client-logo">
+                <div class="client-name">Luxe Designs</div>
+            </div>
+            <div class="client-card">
+                <img src="https://via.placeholder.com/100" alt="Client Logo" class="client-logo">
+                <div class="client-name">Urban Threads</div>
+            </div>
+            <div class="client-card">
+                <img src="https://via.placeholder.com/100" alt="Client Logo" class="client-logo">
+                <div class="client-name">EcoStyle</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Instagram Embed Section -->
+    <section class="instagram-embed" id="instagram">
+        <h2>Follow Us on Instagram</h2>
+        <p>Stay connected with our latest designs and updates by following us on Instagram.</p>
+        <iframe 
+            src="https://www.instagram.com/carlen.thelabel/embed" 
+            frameborder="0" 
+            scrolling="no" 
+            allowtransparency="true">
+        </iframe>
+        <a href="https://www.instagram.com/carlen.thelabel/" target="_blank">Visit our Instagram</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Carlén - All Rights Reserved. | <a href="#contact">Contact Us</a></p>
+    </footer>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.pageX}px`;
+            cursor.style.top = `${e.pageY}px`;
+        });
+
+        document.querySelectorAll('a, button, .gallery img, .client-card').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Sticky Header
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth Scroll for Navigation Links
+        document.querySelectorAll('header nav ul li a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                if (!this.getAttribute('href').startsWith('#')) return; // Skip external links
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

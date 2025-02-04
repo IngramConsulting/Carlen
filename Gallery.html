@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carlén - Infinite Scrolling Gallery</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #fef6f9;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(232, 158, 184, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            transition: transform 0.1s ease, background-color 0.2s ease;
+        }
+
+        .custom-cursor.hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            background-color: rgba(232, 158, 184, 0.6);
+        }
+
+        /* Header Styles */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            transition: background-color 0.3s ease;
+        }
+
+        .header.scrolled {
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        .header .logo a {
+            font-size: 24px;
+            font-weight: bold;
+            color: red;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .header .nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        .header .nav a {
+            text-decoration: none;
+            color: #555;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .header .nav a:hover {
+            color: #000;
+        }
+
+        /* Horizontal Gallery Container */
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-top: 100px;
+        }
+
+        .gallery-wrapper {
+            position: relative;
+            width: 100%;
+            height: 70%;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .gallery-track {
+            display: flex;
+            align-items: center;
+            animation: scroll 40s linear infinite;
+            transform-style: preserve-3d;
+        }
+
+        .gallery-item {
+            flex-shrink: 0;
+            width: 300px;
+            height: 400px;
+            margin: 0 20px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transform: translateZ(0);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05) translateZ(20px);
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Description Section */
+        .description-section {
+            margin-top: 30px;
+            padding: 20px;
+            width: 80%;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .description-section h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .description-section p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        /* Instagram Gallery Section */
+        .instagram-gallery-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .gallery-title {
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #E89EB8;
+            font-weight: bold;
+        }
+
+        .instagram-gallery-track {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            justify-items: center;
+        }
+
+        .instagram-gallery-item {
+            width: 100%;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .instagram-gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .instagram-gallery-track {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .header {
+                padding: 0 20px;
+            }
+            .gallery-item {
+                width: 250px;
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <a href="index.html">Carlén</a>
+        </div>
+        <nav class="nav">
+            <a href="#horizontalGallery">Gallery</a>
+            <a href="#instagramGallery">Designs</a>
+        </nav>
+    </div>
+
+    <!-- Horizontal Gallery -->
+    <div class="container" id="horizontalGallery">
+        <div class="gallery-wrapper">
+            <div class="gallery-track">
+                <!-- Original Items -->
+                <div class="gallery-item" style="background-image: url('Hat.png');" data-title="Stylish Hat" data-description="A fashionable hat perfect for summer days."></div>
+                <div class="gallery-item" style="background-image: url('bag.png');" data-title="Designer Bag" data-description="A sleek and modern bag for everyday use."></div>
+                <div class="gallery-item" style="background-image: url('bag2.png');" data-title="Elegant Bag" data-description="A luxurious bag with intricate designs."></div>
+                <div class="gallery-item" style="background-image: url('Caro.png');" data-title="Caroline's Pick" data-description="A handpicked item from Caroline's collection."></div>
+                <div class="gallery-item" style="background-image: url('Skull.png');" data-title="Skull Artwork" data-description="A bold artwork inspired by gothic designs."></div>
+                <div class="gallery-item" style="background-image: url('WT.png');" data-title="White T-Shirt" data-description="A classic white T-shirt made from premium materials."></div>
+                <div class="gallery-item" style="background-image: url('TTGRLZ.png');" data-title="White T-Shirt" data-description="A classic white T-shirt made from premium materials."></div>
+                
+                <!-- Cloned Items (Added via JavaScript) -->
+            </div>
+        </div>
+
+        <div class="description-section">
+            <h2>Stylish Hat</h2>
+            <p>A fashionable hat perfect for summer days.</p>
+        </div>
+    </div>
+
+    <!-- Instagram Gallery -->
+    <div class="instagram-gallery-wrapper" id="instagramGallery">
+        <div class="gallery-title">All my designs</div>
+        <div class="instagram-gallery-track">
+            <div class="instagram-gallery-item" style="background-image: url('Hat.png');"></div>
+            <div class="instagram-gallery-item" style="background-image: url('bag.png');"></div>
+            <div class="instagram-gallery-item" style="background-image: url('bag2.png');"></div>
+            <div class="instagram-gallery-item" style="background-image: url('Caro.png');"></div>
+            <div class="instagram-gallery-item" style="background-image: url('Skull.png');"></div>
+            <div class="instagram-gallery-item" style="background-image: url('WT.png');"></div>
+            <div class="instagram-gallery-item" style="background-image: url('TTGRLZ.png');"></div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox">
+        <img src="" alt="Lightbox Image">
+    </div>
+
+    <script>
+        // Infinite Scroll Logic
+        const galleryTrack = document.querySelector('.gallery-track');
+        const items = Array.from(galleryTrack.children);
+        
+        // Clone all items for seamless loop
+        items.forEach(item => {
+            const clone = item.cloneNode(true);
+            galleryTrack.appendChild(clone);
+        });
+
+        // Calculate total width and set track width
+        const itemWidth = items[0].offsetWidth + 40; // 40px margin (20px each side)
+        galleryTrack.style.width = `${itemWidth * items.length * 2}px`;
+
+        // Custom Cursor
+        const cursor = document.querySelector('.custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.pageX}px`;
+            cursor.style.top = `${e.pageY}px`;
+        });
+
+        document.querySelectorAll('a, .gallery-item, .instagram-gallery-item').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Header Scroll Effect
+        const header = document.querySelector('.header');
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('.nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Lightbox Functionality
+        const lightbox = document.querySelector('.lightbox');
+        const lightboxImg = lightbox.querySelector('img');
+        document.querySelectorAll('.instagram-gallery-item').forEach(item => {
+            item.addEventListener('click', () => {
+                lightboxImg.src = item.style.backgroundImage.slice(5, -2);
+                lightbox.classList.add('active');
+            });
+        });
+
+        lightbox.addEventListener('click', () => lightbox.classList.remove('active'));
+
+        // Dynamic Description Updates
+        const descriptionTitle = document.querySelector('.description-section h2');
+        const descriptionText = document.querySelector('.description-section p');
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.addEventListener('mouseover', () => {
+                descriptionTitle.textContent = item.dataset.title;
+                descriptionText.textContent = item.dataset.description;
+            });
+        });
+
+        // Pause Animation on Hover
+        const galleryWrapper = document.querySelector('.gallery-wrapper');
+        galleryWrapper.addEventListener('mouseenter', () => {
+            galleryTrack.style.animationPlayState = 'paused';
+        });
+        galleryWrapper.addEventListener('mouseleave', () => {
+            galleryTrack.style.animationPlayState = 'running';
+        });
+    </script>
+</body>
+</html>
+
+ 
+
+
+
